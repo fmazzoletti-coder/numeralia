@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Numeralia — Tu mapa numérico personal</title>
+  <meta name="description" content="Descubrí el lenguaje oculto de tus números. Estudios numerológicos pitagóricos y caldeos generados con inteligencia artificial." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink:       #1a1610;
+      --ink2:      #4a4540;
+      --ink3:      #8a857e;
+      --parchment: #f7f3ec;
+      --parchment2:#ede8df;
+      --parchment3:#e2dcd2;
+      --gold:      #b8963e;
+      --gold2:     #d4af6a;
+      --gold3:     #f0d9a0;
+      --radius:    6px;
+      --radius-lg: 12px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      background: var(--parchment);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.1rem 2.5rem;
+      background: rgba(247,243,236,0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--parchment3);
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--gold); }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+    }
+
+    nav ul a {
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink2);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    nav ul a:hover { color: var(--gold); }
+
+    .nav-cta {
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.55rem 1.3rem;
+      border: 1px solid var(--gold);
+      border-radius: var(--radius);
+      color: var(--gold);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .nav-cta:hover {
+      background: var(--gold);
+      color: var(--parchment);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.06;
+      background-image:
+        repeating-linear-gradient(0deg, var(--gold) 0, var(--gold) 1px, transparent 1px, transparent 60px),
+        repeating-linear-gradient(90deg, var(--gold) 0, var(--gold) 1px, transparent 1px, transparent 60px);
+    }
+
+    .hero-sigil {
+      font-size: 3.5rem;
+      margin-bottom: 1.5rem;
+      display: block;
+      animation: breathe 4s ease-in-out infinite;
+      color: var(--gold);
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); opacity: 0.7; }
+      50% { transform: scale(1.1); opacity: 1; }
+    }
+
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      margin-bottom: 1.5rem;
+      color: var(--ink);
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .hero-sub {
+      font-size: clamp(0.95rem, 2vw, 1.1rem);
+      color: var(--ink2);
+      max-width: 480px;
+      line-height: 1.8;
+      margin-bottom: 3rem;
+      font-weight: 300;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      padding: 0.9rem 2.2rem;
+      background: var(--ink);
+      color: var(--parchment);
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Jost', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+
+    .btn-primary:hover { background: var(--gold); }
+
+    .btn-ghost {
+      padding: 0.9rem 2.2rem;
+      background: transparent;
+      color: var(--ink2);
+      border: 1px solid var(--parchment3);
+      border-radius: var(--radius);
+      font-family: 'Jost', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--ink2);
+      color: var(--ink);
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--ink3);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      animation: bounce 2.5s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ── FEATURES ── */
+    .features {
+      padding: 6rem 2rem;
+      background: var(--parchment2);
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .section-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 300;
+      line-height: 1.2;
+      color: var(--ink);
+    }
+
+    .features-grid {
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .feature-card {
+      background: var(--parchment);
+      border: 1px solid var(--parchment3);
+      border-radius: var(--radius-lg);
+      padding: 2rem 1.75rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--gold2);
+      transform: translateY(-3px);
+    }
+
+    .feature-icon {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .feature-card h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+      color: var(--ink);
+    }
+
+    .feature-card p {
+      font-size: 0.9rem;
+      color: var(--ink2);
+      line-height: 1.75;
+    }
+
+    /* ── NUMBERS EXPLAINER ── */
+    .numbers-section {
+      padding: 6rem 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .numbers-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      border: 1px solid var(--parchment3);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-top: 3rem;
+    }
+
+    .number-row {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      background: var(--parchment);
+      transition: background 0.2s;
+    }
+
+    .number-row:hover { background: var(--parchment2); }
+
+    .number-row + .number-row { border-top: 1px solid var(--parchment3); }
+
+    .number-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--gold);
+      padding: 1.5rem 1rem;
+      border-right: 1px solid var(--parchment3);
+    }
+
+    .number-info {
+      padding: 1.4rem 1.5rem;
+    }
+
+    .number-info h4 {
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink2);
+      margin-bottom: 0.3rem;
+    }
+
+    .number-info p {
+      font-size: 0.9rem;
+      color: var(--ink2);
+      line-height: 1.6;
+    }
+
+    /* ── APP SECTION ── */
+    .app-section {
+      padding: 6rem 2rem;
+      background: var(--ink);
+      color: var(--parchment);
+    }
+
+    .app-section .section-title { color: var(--parchment); }
+    .app-section .section-tag { color: var(--gold2); }
+
+    .app-container {
+      max-width: 600px;
+      margin: 3rem auto 0;
+    }
+
+    .app-form-card {
+      background: rgba(247,243,236,0.05);
+      border: 1px solid rgba(247,243,236,0.12);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+    }
+
+    .app-field {
+      margin-bottom: 1.25rem;
+    }
+
+    .app-field label {
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--parchment3);
+      margin-bottom: 0.5rem;
+    }
+
+    .app-field input {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      background: rgba(247,243,236,0.07);
+      border: 1px solid rgba(247,243,236,0.15);
+      border-radius: var(--radius);
+      color: var(--parchment);
+      font-family: 'Jost', sans-serif;
+      font-size: 1rem;
+      font-weight: 300;
+      transition: border-color 0.2s;
+    }
+
+    .app-field input:focus {
+      outline: none;
+      border-color: var(--gold2);
+    }
+
+    .app-field input::placeholder { color: rgba(247,243,236,0.3); }
+
+    .app-field input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(1) opacity(0.4);
+    }
+
+    .btn-app {
+      width: 100%;
+      padding: 0.9rem;
+      background: var(--gold);
+      color: var(--ink);
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: all 0.25s;
+      margin-top: 0.5rem;
+    }
+
+    .btn-app:hover { background: var(--gold2); }
+    .btn-app:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .app-loading {
+      text-align: center;
+      padding: 3rem 1rem;
+      display: none;
+    }
+
+    .app-loading-sigil {
+      font-size: 2.5rem;
+      display: block;
+      margin-bottom: 1rem;
+      color: var(--gold);
+      animation: spin 5s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .app-loading p {
+      font-size: 0.85rem;
+      color: var(--parchment3);
+      letter-spacing: 0.08em;
+    }
+
+    .app-result { display: none; }
+
+    .result-name-header {
+      text-align: center;
+      padding: 1.5rem 0 2rem;
+      border-bottom: 1px solid rgba(247,243,236,0.1);
+      margin-bottom: 1.5rem;
+    }
+
+    .result-name-header h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.7rem;
+      font-weight: 300;
+      color: var(--parchment);
+      margin-bottom: 0.25rem;
+    }
+
+    .result-name-header p {
+      font-size: 0.8rem;
+      color: var(--parchment3);
+      letter-spacing: 0.08em;
+    }
+
+    .nums-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 1.5rem;
+    }
+
+    .num-chip {
+      background: rgba(247,243,236,0.05);
+      border: 1px solid rgba(247,243,236,0.1);
+      border-radius: var(--radius);
+      padding: 0.9rem 0.5rem;
+      text-align: center;
+    }
+
+    .num-chip .n {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--gold2);
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+
+    .num-chip .l {
+      font-size: 0.62rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--parchment3);
+    }
+
+    .reading-block {
+      background: rgba(247,243,236,0.04);
+      border: 1px solid rgba(247,243,236,0.09);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .reading-block h3 {
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold2);
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(247,243,236,0.08);
+    }
+
+    .reading-block p {
+      font-size: 0.92rem;
+      line-height: 1.8;
+      color: rgba(247,243,236,0.8);
+      font-weight: 300;
+    }
+
+    .app-error {
+      background: rgba(220,50,50,0.1);
+      border: 1px solid rgba(220,50,50,0.3);
+      border-radius: var(--radius);
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+      color: #ff9090;
+      margin-top: 0.75rem;
+      display: none;
+    }
+
+    .btn-reset {
+      width: 100%;
+      padding: 0.7rem;
+      background: transparent;
+      border: 1px solid rgba(247,243,236,0.15);
+      border-radius: var(--radius);
+      font-family: 'Jost', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      color: var(--parchment3);
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 0.75rem;
+    }
+
+    .btn-reset:hover {
+      border-color: rgba(247,243,236,0.3);
+      color: var(--parchment);
+    }
+
+    /* ── PRICING ── */
+    .pricing {
+      padding: 6rem 2rem;
+      background: var(--parchment2);
+    }
+
+    .pricing-grid {
+      max-width: 860px;
+      margin: 3rem auto 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); max-width: 680px;
+      gap: 1.25rem;
+    }
+
+    .pricing-card {
+      background: var(--parchment);
+      border: 1px solid var(--parchment3);
+      border-radius: var(--radius-lg);
+      padding: 2rem 1.75rem;
+      position: relative;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .pricing-card:hover { transform: translateY(-4px); }
+
+    .pricing-card.featured {
+      border-color: var(--gold);
+      background: var(--ink);
+      color: var(--parchment);
+    }
+
+    .pricing-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--gold);
+      color: var(--ink);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.9rem;
+      border-radius: 99px;
+      white-space: nowrap;
+    }
+
+    .pricing-name {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink3);
+      margin-bottom: 0.75rem;
+    }
+
+    .pricing-card.featured .pricing-name { color: var(--parchment3); }
+
+    .pricing-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem;
+      font-weight: 300;
+      line-height: 1;
+      color: var(--ink);
+      margin-bottom: 0.25rem;
+    }
+
+    .pricing-card.featured .pricing-price { color: var(--parchment); }
+
+    .pricing-price sup {
+      font-size: 1.2rem;
+      vertical-align: super;
+    }
+
+    .pricing-period {
+      font-size: 0.8rem;
+      color: var(--ink3);
+      margin-bottom: 1.75rem;
+    }
+
+    .pricing-card.featured .pricing-period { color: var(--parchment3); }
+
+    .pricing-features {
+      list-style: none;
+      margin-bottom: 2rem;
+    }
+
+    .pricing-features li {
+      font-size: 0.88rem;
+      color: var(--ink2);
+      padding: 0.45rem 0;
+      border-bottom: 1px solid var(--parchment3);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .pricing-card.featured .pricing-features li {
+      color: rgba(247,243,236,0.75);
+      border-color: rgba(247,243,236,0.1);
+    }
+
+    .pricing-features li::before {
+      content: '✦';
+      color: var(--gold);
+      font-size: 0.6rem;
+      flex-shrink: 0;
+    }
+
+    .btn-plan {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 0.85rem;
+      border-radius: var(--radius);
+      font-family: 'Jost', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid var(--ink);
+      color: var(--ink);
+      background: transparent;
+    }
+
+    .btn-plan:hover { background: var(--ink); color: var(--parchment); }
+
+    .btn-plan.featured-btn {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--ink);
+    }
+
+    .btn-plan.featured-btn:hover { background: var(--gold2); border-color: var(--gold2); }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials {
+      padding: 6rem 2rem;
+    }
+
+    .testi-grid {
+      max-width: 900px;
+      margin: 3rem auto 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .testi-card {
+      background: var(--parchment2);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+    }
+
+    .testi-stars {
+      color: var(--gold);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.9rem;
+    }
+
+    .testi-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-style: italic;
+      line-height: 1.7;
+      color: var(--ink);
+      margin-bottom: 1.25rem;
+    }
+
+    .testi-author {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--ink3);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink);
+      color: var(--parchment3);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      color: var(--parchment);
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-logo span { color: var(--gold); }
+
+    footer p {
+      font-size: 0.8rem;
+      line-height: 1.8;
+      color: var(--ink3);
+      max-width: 420px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .footer-links a {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink3);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--gold2); }
+
+    .footer-copy {
+      font-size: 0.72rem;
+      color: rgba(247,243,236,0.2);
+    }
+
+    /* ── DIVIDER ── */
+    .divider-ornament {
+      text-align: center;
+      color: var(--gold);
+      font-size: 0.9rem;
+      letter-spacing: 0.5em;
+      opacity: 0.5;
+      margin: 0.5rem 0;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      nav ul { display: none; }
+      .nums-row { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ── FADE IN ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── MODAL PAGO ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(26,22,16,0.75);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal-box {
+      background: var(--parchment);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 2rem;
+      max-width: 420px;
+      width: 100%;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem; right: 1.25rem;
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      color: var(--ink3);
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .modal-close:hover { color: var(--ink); }
+
+    .modal-plan-badge {
+      display: inline-block;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: var(--parchment2);
+      color: var(--gold);
+      padding: 0.3rem 0.8rem;
+      border-radius: 99px;
+      margin-bottom: 1rem;
+    }
+
+    .modal-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 300;
+      color: var(--ink);
+      margin-bottom: 0.25rem;
+    }
+
+    .modal-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.4rem;
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-field {
+      margin-bottom: 1rem;
+    }
+
+    .modal-field label {
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink2);
+      margin-bottom: 0.4rem;
+    }
+
+    .modal-field input, .modal-field select {
+      width: 100%;
+      padding: 0.65rem 0.9rem;
+      border: 1px solid var(--parchment3);
+      border-radius: var(--radius);
+      font-family: 'Jost', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 300;
+      background: var(--parchment);
+      color: var(--ink);
+      transition: border-color 0.2s;
+    }
+
+    .modal-field input:focus, .modal-field select:focus {
+      outline: none;
+      border-color: var(--gold2);
+    }
+
+    .modal-currency-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .currency-btn {
+      padding: 0.65rem;
+      border: 1px solid var(--parchment3);
+      border-radius: var(--radius);
+      background: var(--parchment);
+      font-family: 'Jost', sans-serif;
+      font-size: 0.85rem;
+      color: var(--ink2);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .currency-btn.selected {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: var(--parchment2);
+    }
+
+    .btn-pagar {
+      width: 100%;
+      padding: 0.9rem;
+      background: #009ee3;
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Jost', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-pagar:hover { background: #007cbf; }
+    .btn-pagar:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .mp-logo {
+      font-weight: 700;
+      font-size: 0.8rem;
+      opacity: 0.85;
+    }
+
+    .modal-secure {
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--ink3);
+      margin-top: 0.75rem;
+    }
+
+    .modal-error {
+      background: #fff0f0;
+      border: 1px solid #ffcccc;
+      border-radius: var(--radius);
+      padding: 0.65rem 0.9rem;
+      font-size: 0.83rem;
+      color: #cc3333;
+      margin-top: 0.75rem;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#inicio">Numer<span>a</span>lia</a>
+  <ul>
+    <li><a href="#como-funciona">Cómo funciona</a></li>
+    <li><a href="#lectura">Tu lectura</a></li>
+    <li><a href="#precios">Precios</a></li>
+  </ul>
+  <a class="nav-cta" href="#lectura">Comenzar</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <div class="hero-bg"></div>
+  <span class="hero-sigil">✦</span>
+  <h1>Descubrí el lenguaje<br/><em>oculto de tus números</em></h1>
+  <p class="hero-sub">Estudios numerológicos pitagóricos y caldeos generados con inteligencia artificial. Profundos, únicos e irrepetibles.</p>
+  <div class="hero-actions">
+    <a class="btn-primary" href="#lectura">Revelar mi mapa numérico</a>
+    <a class="btn-ghost" href="#como-funciona">¿Cómo funciona?</a>
+  </div>
+  <div class="hero-scroll">
+    <span>Explorar</span>
+    <span>↓</span>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="como-funciona">
+  <div class="section-header fade-in">
+    <span class="section-tag">El método</span>
+    <h2 class="section-title">Dos tradiciones,<br/>una verdad</h2>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card fade-in">
+      <span class="feature-icon">⬡</span>
+      <h3>Numerología Pitagórica</h3>
+      <p>El sistema occidental más completo. Analiza tu número de vida, destino, alma y personalidad a partir de tu nombre y fecha de nacimiento.</p>
+    </div>
+    <div class="feature-card fade-in">
+      <span class="feature-icon">◈</span>
+      <h3>Vibración Caldea</h3>
+      <p>La tradición más antigua, de origen babilónico. Revela las energías profundas de tu nombre según la numerología de los magos de Caldea.</p>
+    </div>
+    <div class="feature-card fade-in">
+      <span class="feature-icon">✧</span>
+      <h3>Inteligencia Artificial</h3>
+      <p>Cada lectura es generada en tiempo real por IA avanzada. No hay plantillas ni respuestas genéricas: tu estudio es único e irrepetible.</p>
+    </div>
+    <div class="feature-card fade-in">
+      <span class="feature-icon">◉</span>
+      <h3>Año Personal</h3>
+      <p>Conocé las energías que están activas en tu vida ahora mismo y qué acciones te conviene tomar durante este ciclo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- NUMBERS EXPLAINER -->
+<section class="numbers-section" id="numeros">
+  <div class="section-header fade-in">
+    <span class="section-tag">Los números</span>
+    <h2 class="section-title">¿Qué calculamos?</h2>
+  </div>
+  <div class="numbers-list fade-in">
+    <div class="number-row">
+      <div class="number-badge">♾</div>
+      <div class="number-info">
+        <h4>Número de vida</h4>
+        <p>El más importante. Se obtiene de tu fecha de nacimiento y revela tu propósito de alma en esta encarnación.</p>
+      </div>
+    </div>
+    <div class="number-row">
+      <div class="number-badge">◈</div>
+      <div class="number-info">
+        <h4>Número del destino</h4>
+        <p>Derivado de tu nombre completo usando la tabla pitagórica. Muestra el camino que estás llamado a recorrer.</p>
+      </div>
+    </div>
+    <div class="number-row">
+      <div class="number-badge">♡</div>
+      <div class="number-info">
+        <h4>Número del alma</h4>
+        <p>Calculado a partir de las vocales de tu nombre. Refleja tus deseos más profundos y tu mundo interior.</p>
+      </div>
+    </div>
+    <div class="number-row">
+      <div class="number-badge">◎</div>
+      <div class="number-info">
+        <h4>Número de personalidad</h4>
+        <p>Las consonantes de tu nombre revelan cómo te proyectás al mundo y cómo los demás te perciben.</p>
+      </div>
+    </div>
+    <div class="number-row">
+      <div class="number-badge">⬡</div>
+      <div class="number-info">
+        <h4>Vibración caldea</h4>
+        <p>Tu nombre analizado desde la tradición babilónica, revelando energías que el sistema pitagórico no contempla.</p>
+      </div>
+    </div>
+    <div class="number-row">
+      <div class="number-badge">☉</div>
+      <div class="number-info">
+        <h4>Año personal</h4>
+        <p>Las energías activas en tu vida durante el año en curso y cómo navegar este ciclo con conciencia.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APP -->
+<section class="app-section" id="lectura">
+  <div class="section-header">
+    <span class="section-tag">Tu estudio gratuito</span>
+    <h2 class="section-title">Revelá tu mapa numérico</h2>
+  </div>
+
+  <div class="app-container">
+    <!-- FORM -->
+    <div class="app-form-card" id="app-form">
+      <div class="app-field">
+        <label>Nombre completo</label>
+        <input type="text" id="inp-nombre" placeholder="Como figura en tu documento" autocomplete="off" />
+      </div>
+      <div class="app-field">
+        <label>Fecha de nacimiento</label>
+        <input type="date" id="inp-fecha" />
+      </div>
+      <button class="btn-app" id="btn-calcular" onclick="calcular()">✦ Revelar mis números</button>
+      <div class="app-error" id="app-error"></div>
+    </div>
+
+    <!-- LOADING -->
+    <div class="app-loading" id="app-loading">
+      <span class="app-loading-sigil">✧</span>
+      <p>Las fuerzas pitagóricas están calculando tu esencia...</p>
+    </div>
+
+    <!-- RESULT -->
+    <div class="app-result" id="app-result">
+      <div class="result-name-header">
+        <h2 id="res-nombre"></h2>
+        <p id="res-fecha"></p>
+      </div>
+      <div class="nums-row" id="res-chips"></div>
+      <div id="res-reading"></div>
+      <button class="btn-reset" onclick="resetApp()">← Consultar otra persona</button>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="precios">
+  <div class="section-header fade-in">
+    <span class="section-tag">Planes</span>
+    <h2 class="section-title">Elegí tu profundidad</h2>
+  </div>
+  <div class="pricing-grid">
+
+    <div class="pricing-card featured fade-in">
+      <div class="pricing-badge">Más popular</div>
+      <div class="pricing-name">Revelación</div>
+      <div class="pricing-price"><sup>$</sup>19<span style="font-size:1.2rem">.99</span></div>
+      <div class="pricing-period">pago único por lectura</div>
+      <ul class="pricing-features">
+        <li>Estudio pitagórico completo</li>
+        <li>Análisis de compatibilidad</li>
+        <li>Ciclos de vida completos</li>
+        <li>PDF descargable</li>
+        <li>Carta numerológica visual</li>
+      </ul>
+      <a href="#pago" class="btn-plan featured-btn" onclick="iniciarPago('revelacion')">Obtener lectura completa</a>
+    </div>
+
+    <div class="pricing-card fade-in">
+      <div class="pricing-name">Maestría</div>
+      <div class="pricing-price"><sup>$</sup>29<span style="font-size:1.2rem">.99</span></div>
+      <div class="pricing-period">pago único</div>
+      <ul class="pricing-features">
+        <li>Todo lo del plan Revelación</li>
+        <li>Pronóstico de 12 meses</li>
+        <li>Números de pareja/socios</li>
+        <li>Propósito de vida profundo</li>
+        <li>Soporte personalizado</li>
+      </ul>
+      <a href="#pago" class="btn-plan" onclick="iniciarPago('maestria')">Quiero la lectura maestra</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="section-header fade-in">
+    <span class="section-tag">Testimonios</span>
+    <h2 class="section-title">Lo que dicen<br/>nuestros consultantes</h2>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card fade-in">
+      <div class="testi-stars">✦ ✦ ✦ ✦ ✦</div>
+      <p class="testi-text">"La lectura me dejó sin palabras. Describió mi mundo interior con una precisión que me resultó casi inquietante. Lo recomiendo a todos."</p>
+      <div class="testi-author">— Valentina R., Buenos Aires</div>
+    </div>
+    <div class="testi-card fade-in">
+      <div class="testi-stars">✦ ✦ ✦ ✦ ✦</div>
+      <p class="testi-text">"Siempre fui escéptica, pero la sección del año personal me ayudó a entender por qué este ciclo se siente tan diferente. Increíble."</p>
+      <div class="testi-author">— Camila F., Córdoba</div>
+    </div>
+    <div class="testi-card fade-in">
+      <div class="testi-stars">✦ ✦ ✦ ✦ ✦</div>
+      <p class="testi-text">"Hice lecturas en otros sitios y nunca sentí que fueran 'mías'. Acá la profundidad es otra. Parece que te conocen de toda la vida."</p>
+      <div class="testi-author">— Martín L., Rosario</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Numer<span>a</span>lia</div>
+  <p>El lenguaje de los números al servicio de tu autoconocimiento. Combinamos sabiduría ancestral con inteligencia artificial.</p>
+  <div class="footer-links">
+    <a href="#inicio">Inicio</a>
+    <a href="#como-funciona">Cómo funciona</a>
+    <a href="#lectura">Tu lectura</a>
+    <a href="#precios">Precios</a>
+    <a href="mailto:hola@numeralia.com">Contacto</a>
+  </div>
+  <div class="divider-ornament">✦ ✦ ✦</div>
+  <p class="footer-copy" style="margin-top:1.5rem">© 2026 Numeralia. Todos los derechos reservados.</p>
+</footer>
+
+<script>
+  /* ── Numerología ── */
+  const PIT = {A:1,B:2,C:3,D:4,E:5,F:6,G:7,H:8,I:9,J:1,K:2,L:3,M:4,N:5,O:6,P:7,Q:8,R:9,S:1,T:2,U:3,V:4,W:5,X:6,Y:7,Z:8};
+  const CAL = {A:1,B:2,C:3,D:4,E:5,F:8,G:3,H:5,I:1,J:1,K:2,L:3,M:4,N:5,O:7,P:8,Q:1,R:2,S:3,T:4,U:6,V:6,W:6,X:5,Y:1,Z:7};
+  const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+
+  function red(n) {
+    if (n===11||n===22||n===33) return n;
+    while(n>9){ n=String(n).split('').reduce((a,d)=>a+parseInt(d),0); if(n===11||n===22||n===33) return n; }
+    return n;
+  }
+
+  function sumName(name, tbl) {
+    return red(name.toUpperCase().replace(/[^A-Z]/g,'').split('').reduce((a,c)=>a+(tbl[c]||0),0));
+  }
+
+  function vida(fecha) {
+    return red(fecha.replace(/-/g,'').split('').reduce((a,d)=>a+parseInt(d),0));
+  }
+
+  function alma(name) {
+    return red(name.toUpperCase().replace(/[^AEIOU]/g,'').split('').reduce((a,c)=>a+(PIT[c]||0),0));
+  }
+
+  function personalidad(name) {
+    return red(name.toUpperCase().replace(/[^BCDFGHJKLMNPQRSTVWXYZ]/g,'').split('').reduce((a,c)=>a+(PIT[c]||0),0));
+  }
+
+  function anioPersonal(fecha) {
+    const p = fecha.split('-');
+    return red((String(new Date().getFullYear())+p[1]+p[2]).split('').reduce((a,d)=>a+parseInt(d),0));
+  }
+
+  function fmtFecha(f) {
+    const [y,m,d] = f.split('-');
+    return `${parseInt(d)} de ${MESES[parseInt(m)-1]} de ${y}`;
+  }
+
+  async function calcular() {
+    const nombre = document.getElementById('inp-nombre').value.trim();
+    const fecha  = document.getElementById('inp-fecha').value;
+    const errEl  = document.getElementById('app-error');
+    errEl.style.display = 'none';
+
+    if (!nombre || !fecha) {
+      errEl.textContent = 'Por favor completá tu nombre completo y fecha de nacimiento.';
+      errEl.style.display = 'block'; return;
+    }
+
+    const nVida  = vida(fecha);
+    const nDest  = sumName(nombre, PIT);
+    const nAlma  = alma(nombre);
+    const nPers  = personalidad(nombre);
+    const nCald  = sumName(nombre, CAL);
+    const nAnio  = anioPersonal(fecha);
+
+    document.getElementById('app-form').style.display    = 'none';
+    document.getElementById('app-loading').style.display = 'block';
+
+    document.getElementById('res-nombre').textContent = nombre;
+    document.getElementById('res-fecha').textContent  = fmtFecha(fecha);
+
+    document.getElementById('res-chips').innerHTML = [
+      {n: nVida, l: 'Vida'},
+      {n: nDest, l: 'Destino'},
+      {n: nAlma, l: 'Alma'},
+      {n: nPers, l: 'Personalidad'},
+      {n: nCald, l: 'Caldeo'},
+      {n: nAnio, l: 'Año personal'},
+    ].map(c=>`<div class="num-chip"><div class="n">${c.n}</div><div class="l">${c.l}</div></div>`).join('');
+
+    const prompt = `Eres un numerólogo maestro en las tradiciones pitagórica y caldea. Realizá un estudio numerológico completo, profundo y altamente personalizado para ${nombre}, nacido/a el ${fmtFecha(fecha)}.
+
+Sus números son:
+- Número de Vida: ${nVida}
+- Número del Destino (pitagórico): ${nDest}
+- Número del Alma (vocales): ${nAlma}
+- Número de Personalidad (consonantes): ${nPers}
+- Vibración Caldea: ${nCald}
+- Año Personal actual: ${nAnio}
+
+Redactá en español, segunda persona (vos), tono místico y evocador pero accesible. Organizá la respuesta EXACTAMENTE así:
+
+[ESENCIA]
+(Número de Vida ${nVida}: propósito de alma, misión en esta vida, mínimo 90 palabras)
+
+[DESTINO]
+(Número del Destino ${nDest} y vibración caldea ${nCald}: camino de vida y energías de nombre, mínimo 90 palabras)
+
+[INTERIOR]
+(Alma ${nAlma} y Personalidad ${nPers}: mundo emocional interno vs proyección externa, mínimo 90 palabras)
+
+[AHORA]
+(Año Personal ${nAnio}: energías activas ahora, qué aprovechar, qué evitar, mínimo 90 palabras)
+
+Sé específico y evocador. Que la persona sienta que este estudio es únicamente suyo. No uses frases genéricas o de relleno.`;
+
+    try {
+      const res  = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          messages: [{ role: "user", content: prompt }]
+        })
+      });
+      const data = await res.json();
+      const text = data.content?.map(b=>b.text||'').join('') || '';
+
+      const sections = [
+        { key: 'ESENCIA',  title: `Tu esencia — Número de vida ${nVida}` },
+        { key: 'DESTINO',  title: `Camino del destino — Número ${nDest}` },
+        { key: 'INTERIOR', title: `Mundo interior — Alma ${nAlma} · Personalidad ${nPers}` },
+        { key: 'AHORA',    title: `El momento presente — Año personal ${nAnio}` },
+      ];
+
+      let html = '';
+      sections.forEach(s => {
+        const m = text.match(new RegExp(`\\[${s.key}\\]([\\s\\S]*?)(?=\\[|$)`));
+        if (m && m[1].trim()) {
+          html += `<div class="reading-block"><h3>${s.title}</h3><p>${m[1].trim()}</p></div>`;
+        }
+      });
+
+      document.getElementById('app-loading').style.display = 'none';
+      document.getElementById('app-result').style.display  = 'block';
+      document.getElementById('res-reading').innerHTML = html;
+
+    } catch(e) {
+      document.getElementById('app-loading').style.display = 'none';
+      document.getElementById('app-form').style.display    = 'block';
+      const errEl = document.getElementById('app-error');
+      errEl.textContent = 'Hubo un error al consultar el oráculo. Por favor intentá de nuevo.';
+      errEl.style.display = 'block';
+    }
+  }
+
+  function resetApp() {
+    document.getElementById('app-result').style.display  = 'none';
+    document.getElementById('app-form').style.display    = 'block';
+    document.getElementById('inp-nombre').value = '';
+    document.getElementById('inp-fecha').value  = '';
+    document.getElementById('res-reading').innerHTML = '';
+  }
+
+  /* ── MercadoPago ── */
+  const MP_PUBLIC_KEY = 'APP_USR-463c10d6-27da-4fa6-8dc8-1205ab7b2674';
+
+  const PLANES = {
+    revelacion: {
+      label: 'Plan Revelación',
+      name: 'Lectura numerológica completa',
+      ars: 19990,
+      usd: 19.99,
+      desc: 'Estudio pitagórico + caldeo completo con PDF',
+      mpLink: 'https://mpago.li/1bxC7gB'
+    },
+    maestria: {
+      label: 'Plan Maestría',
+      name: 'Lectura numerológica maestra',
+      ars: 29990,
+      usd: 29.99,
+      desc: 'Estudio completo + pronóstico 12 meses + compatibilidad',
+      mpLink: 'https://mpago.li/2UYwMAX'
+    }
+  };
+
+  let planActual = 'revelacion';
+  let monedaActual = 'ARS';
+
+  function iniciarPago(plan) {
+    planActual = plan;
+    const p = PLANES[plan];
+    document.getElementById('modal-plan-label').textContent = p.label;
+    document.getElementById('modal-plan-name').textContent = p.name;
+    actualizarPrecioModal();
+    document.getElementById('mp-error').style.display = 'none';
+    document.getElementById('mp-modal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function cerrarModal(e) {
+    if (e.target === document.getElementById('mp-modal')) {
+      document.getElementById('mp-modal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  }
+
+  function selCurrency(cur) {
+    monedaActual = cur;
+    document.getElementById('btn-ars').classList.toggle('selected', cur === 'ARS');
+    document.getElementById('btn-usd').classList.toggle('selected', cur === 'USD');
+    actualizarPrecioModal();
+  }
+
+  function actualizarPrecioModal() {
+    const p = PLANES[planActual];
+    if (monedaActual === 'ARS') {
+      document.getElementById('modal-plan-price').textContent = '$' + p.ars.toLocaleString('es-AR');
+    } else {
+      document.getElementById('modal-plan-price').textContent = 'USD ' + p.usd.toFixed(2);
+    }
+  }
+
+  async function procesarPago() {
+    const nombre = document.getElementById('mp-nombre').value.trim();
+    const email  = document.getElementById('mp-email').value.trim();
+    const errEl  = document.getElementById('mp-error');
+    errEl.style.display = 'none';
+
+    if (!nombre || !email || !email.includes('@')) {
+      errEl.textContent = 'Por favor completá tu nombre y email válido.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    const btn = document.getElementById('btn-pagar');
+    btn.disabled = true;
+    btn.innerHTML = '<span>Procesando...</span>';
+
+    const p = PLANES[planActual];
+    const monto = monedaActual === 'ARS' ? p.ars : p.usd;
+    const moneda = monedaActual;
+
+    try {
+      // Crear preferencia de pago via MP Checkout Pro
+      // En producción esto debe hacerse desde un backend seguro
+      // Por ahora redirigimos al link de pago de MP con los datos
+      const mpUrl = `https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=`;
+
+      // Armamos el body para crear la preferencia
+      const body = {
+        items: [{
+          title: p.name,
+          description: p.desc,
+          quantity: 1,
+          currency_id: moneda,
+          unit_price: monto
+        }],
+        payer: { name: nombre, email: email },
+        back_urls: {
+          success: window.location.href + '?pago=exitoso',
+          failure: window.location.href + '?pago=fallido',
+          pending: window.location.href + '?pago=pendiente'
+        },
+        auto_return: 'approved',
+        statement_descriptor: 'NUMERALIA',
+        external_reference: planActual + '_' + Date.now()
+      };
+
+      // Llamada a MP para crear preferencia (requiere backend en producción)
+      // Por ahora usamos el link de cobro directo de MP
+      const montoFmt = moneda === 'ARS'
+        ? monto.toLocaleString('es-AR')
+        : monto.toFixed(2);
+
+      const mpPayLink = `https://mpago.la/`;
+
+      // Redirigir a MP con datos pre-cargados via Checkout Pro
+      // El link de pago directo es la forma más simple sin backend
+      // Guardar email para seguimiento
+      localStorage.setItem('numeralia_email', email);
+      localStorage.setItem('numeralia_nombre', nombre);
+      localStorage.setItem('numeralia_plan', planActual);
+
+      // Redirigir al link de cobro correspondiente
+      window.open(p.mpLink, '_blank');
+      document.getElementById('mp-modal').classList.remove('active');
+      document.body.style.overflow = '';
+
+      // Mostrar mensaje de confirmación
+      const conf = document.createElement('div');
+      conf.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#1a1610;color:#f7f3ec;padding:1rem 1.75rem;border-radius:8px;font-size:0.88rem;z-index:999;text-align:center;max-width:360px;line-height:1.6';
+      conf.innerHTML = `✦ Te redirigimos a MercadoPago.<br><span style="opacity:0.6;font-size:0.8rem">Enviá el comprobante a hola@numeralia.com y recibís tu lectura.</span>`;
+      document.body.appendChild(conf);
+      setTimeout(() => conf.remove(), 6000);
+
+    } catch(e) {
+      errEl.textContent = 'Error al conectar con MercadoPago. Intentá de nuevo.';
+      errEl.style.display = 'block';
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<span>Pagar con</span><span class="mp-logo">MercadoPago</span>';
+    }
+  }
+
+  /* ── Fade-in on scroll ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+<!-- MODAL MERCADOPAGO -->
+<div class="modal-overlay" id="mp-modal" onclick="cerrarModal(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('mp-modal').classList.remove('active')">×</button>
+    <div class="modal-plan-badge" id="modal-plan-label">Plan Revelación</div>
+    <div class="modal-title" id="modal-plan-name">Lectura completa</div>
+    <div class="modal-price" id="modal-plan-price">$19.99</div>
+
+    <div class="modal-field">
+      <label>Tu nombre completo</label>
+      <input type="text" id="mp-nombre" placeholder="Como figura en tu tarjeta" />
+    </div>
+
+    <div class="modal-field">
+      <label>Tu email</label>
+      <input type="email" id="mp-email" placeholder="Para recibir tu lectura" />
+    </div>
+
+    <div class="modal-field">
+      <label>Moneda de pago</label>
+      <div class="modal-currency-row">
+        <button class="currency-btn selected" id="btn-ars" onclick="selCurrency('ARS')">🇦🇷 Pesos (ARS)</button>
+        <button class="currency-btn" id="btn-usd" onclick="selCurrency('USD')">🇺🇸 Dólares (USD)</button>
+      </div>
+    </div>
+
+    <div class="modal-error" id="mp-error"></div>
+
+    <button class="btn-pagar" id="btn-pagar" onclick="procesarPago()">
+      <span>Pagar con</span>
+      <span class="mp-logo">MercadoPago</span>
+    </button>
+    <div class="modal-secure">🔒 Pago 100% seguro · SSL · Tarjeta, débito o transferencia</div>
+  </div>
+</div>
+</body>
+</html>
