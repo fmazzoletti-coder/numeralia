@@ -569,7 +569,7 @@
       max-width: 860px;
       margin: 3rem auto 0;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); max-width: 680px;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); max-width: 860px;
       gap: 1.25rem;
     }
 
@@ -1145,6 +1145,18 @@
   </div>
   <div class="pricing-grid">
 
+    <div class="pricing-card fade-in">
+      <div class="pricing-name">Primera Luz</div>
+      <div class="pricing-price"><sup></sup>Gratis</div>
+      <div class="pricing-period">siempre gratuito</div>
+      <ul class="pricing-features">
+        <li>3 números esenciales</li>
+        <li>Descripción introductoria</li>
+        <li>Resultado instantáneo</li>
+      </ul>
+      <a href="#lectura" class="btn-plan">Comenzar gratis</a>
+    </div>
+
     <div class="pricing-card featured fade-in">
       <div class="pricing-badge">Más popular</div>
       <div class="pricing-name">Revelación</div>
@@ -1255,6 +1267,8 @@
     return `${parseInt(d)} de ${MESES[parseInt(m)-1]} de ${y}`;
   }
 
+  function esPlanGratis() { return true; } // todos entran gratis primero
+
   async function calcular() {
     const nombre = document.getElementById('inp-nombre').value.trim();
     const fecha  = document.getElementById('inp-fecha').value;
@@ -1288,7 +1302,32 @@
       {n: nAnio, l: 'Año personal'},
     ].map(c=>`<div class="num-chip"><div class="n">${c.n}</div><div class="l">${c.l}</div></div>`).join('');
 
-    const prompt = `Eres un numerólogo maestro en las tradiciones pitagórica y caldea. Realizá un estudio numerológico completo, profundo y altamente personalizado para ${nombre}, nacido/a el ${fmtFecha(fecha)}.
+    const esFree = true; // modo gratuito por defecto
+
+    const prompt = esFree
+      ? `Eres un numerólogo experto. Hacé una introducción numerológica BREVE y misteriosa para ${nombre}, nacido/a el ${fmtFecha(fecha)}.
+
+Sus 3 números esenciales son:
+- Número de Vida: ${nVida}
+- Número del Destino: ${nDest}
+- Número del Alma: ${nAlma}
+
+Respondé EXACTAMENTE en este formato, en español, segunda persona (vos), tono evocador:
+
+[VIDA]
+(1 oración poética y misteriosa sobre el Número de Vida ${nVida}. Máximo 25 palabras.)
+
+[DESTINO]
+(1 oración poética y misteriosa sobre el Número del Destino ${nDest}. Máximo 25 palabras.)
+
+[ALMA]
+(1 oración poética y misteriosa sobre el Número del Alma ${nAlma}. Máximo 25 palabras.)
+
+[LLAMADO]
+(1 párrafo de 30 palabras máximo invitando a descubrir el estudio completo, mencionando que hay mucho más oculto en sus números. Tono tentador y misterioso.)
+
+No agregues nada más. Solo esas 4 secciones.`
+      : `Eres un numerólogo maestro en las tradiciones pitagórica y caldea. Realizá un estudio numerológico completo, profundo y altamente personalizado para ${nombre}, nacido/a el ${fmtFecha(fecha)}.
 
 Sus números son:
 - Número de Vida: ${nVida}
@@ -1315,32 +1354,79 @@ Redactá en español, segunda persona (vos), tono místico y evocador pero acces
 Sé específico y evocador. Que la persona sienta que este estudio es únicamente suyo. No uses frases genéricas o de relleno.`;
 
     try {
-      const res  = await fetch("https://api.anthropic.com/v1/messages", {
+      const GROQ_KEY = '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';
+      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${GROQ_KEY}`
+        },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
+          model: "llama-3.3-70b-versatile",
+          max_tokens: 1500,
+          temperature: 0.9,
           messages: [{ role: "user", content: prompt }]
         })
       });
       const data = await res.json();
-      const text = data.content?.map(b=>b.text||'').join('') || '';
-
-      const sections = [
-        { key: 'ESENCIA',  title: `Tu esencia — Número de vida ${nVida}` },
-        { key: 'DESTINO',  title: `Camino del destino — Número ${nDest}` },
-        { key: 'INTERIOR', title: `Mundo interior — Alma ${nAlma} · Personalidad ${nPers}` },
-        { key: 'AHORA',    title: `El momento presente — Año personal ${nAnio}` },
-      ];
+      const text = data.choices?.[0]?.message?.content || '';
 
       let html = '';
-      sections.forEach(s => {
-        const m = text.match(new RegExp(`\\[${s.key}\\]([\\s\\S]*?)(?=\\[|$)`));
-        if (m && m[1].trim()) {
-          html += `<div class="reading-block"><h3>${s.title}</h3><p>${m[1].trim()}</p></div>`;
-        }
-      });
+
+      if (esFree) {
+        const freeSections = [
+          { key: 'VIDA',    title: `Número de vida — ${nVida}` },
+          { key: 'DESTINO', title: `Número del destino — ${nDest}` },
+          { key: 'ALMA',    title: `Número del alma — ${nAlma}` },
+        ];
+        freeSections.forEach(s => {
+          const m = text.match(new RegExp(`\\[${s.key}\\]([\\s\\S]*?)(?=\\[|$)`));
+          if (m && m[1].trim()) {
+            html += `<div class="reading-block"><h3>${s.title}</h3><p>${m[1].trim()}</p></div>`;
+          }
+        });
+
+        // Llamado a la acción tentador
+        const mLlamado = text.match(/\[LLAMADO\]([\s\S]*?)(?=\[|$)/);
+        const txtLlamado = mLlamado ? mLlamado[1].trim() : 'Hay mucho más en tus números. Tu mapa completo te espera.';
+
+        html += `
+          <div style="background:rgba(184,150,62,0.08);border:1px solid rgba(184,150,62,0.3);border-radius:8px;padding:1.5rem;text-align:center;margin-top:0.5rem;">
+            <div style="font-size:1.4rem;margin-bottom:0.75rem;">✦</div>
+            <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;line-height:1.7;color:rgba(247,243,236,0.85);margin-bottom:1.25rem;">${txtLlamado}</p>
+            <a href="#precios" onclick="document.getElementById('app-result').style.display='none';document.getElementById('app-form').style.display='block';"
+               style="display:inline-block;padding:0.75rem 1.75rem;background:#b8963e;color:#1a1610;border-radius:6px;font-size:0.82rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;">
+              Revelar mi mapa completo ✦
+            </a>
+          </div>`;
+
+        // Chips solo con 3 números en modo free
+        document.getElementById('res-chips').innerHTML = [
+          {n: nVida, l: 'Vida'},
+          {n: nDest, l: 'Destino'},
+          {n: nAlma, l: 'Alma'},
+          {n: '?', l: 'Personalidad'},
+          {n: '?', l: 'Caldeo'},
+          {n: '?', l: 'Año personal'},
+        ].map((c,i) => i < 3
+          ? `<div class="num-chip"><div class="n">${c.n}</div><div class="l">${c.l}</div></div>`
+          : `<div class="num-chip" style="opacity:0.3;filter:blur(2px)"><div class="n">${c.n}</div><div class="l">${c.l}</div></div>`
+        ).join('');
+
+      } else {
+        const sections = [
+          { key: 'ESENCIA',  title: `Tu esencia — Número de vida ${nVida}` },
+          { key: 'DESTINO',  title: `Camino del destino — Número ${nDest}` },
+          { key: 'INTERIOR', title: `Mundo interior — Alma ${nAlma} · Personalidad ${nPers}` },
+          { key: 'AHORA',    title: `El momento presente — Año personal ${nAnio}` },
+        ];
+        sections.forEach(s => {
+          const m = text.match(new RegExp(`\\[${s.key}\\]([\\s\\S]*?)(?=\\[|$)`));
+          if (m && m[1].trim()) {
+            html += `<div class="reading-block"><h3>${s.title}</h3><p>${m[1].trim()}</p></div>`;
+          }
+        });
+      }
 
       document.getElementById('app-loading').style.display = 'none';
       document.getElementById('app-result').style.display  = 'block';
